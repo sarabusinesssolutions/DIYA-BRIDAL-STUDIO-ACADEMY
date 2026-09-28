@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Diya Bridal Studio & Academy CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--wine:#6b1d3a;--wine2:#8a2a4d;--gold:#c9a45c;--cream:#faf5ec;--ink:#3b2a22;--line:#eadfcf;--card:#fff}
+*{box-sizing:border-box}body{margin:0;font:15px/1.5 Inter,system-ui,sans-serif;color:var(--ink);background:var(--cream)}
+h1,h2,h3,.brand{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+.btn{background:var(--wine);color:#fff;border:0;border-radius:10px;padding:12px 20px;cursor:pointer;font-weight:600}
+.btn:hover{background:var(--wine2)}.btn.alt{background:#fff;color:var(--wine);border:1px solid var(--wine)}.btn.sm{padding:7px 12px;font-size:13px}.btn.red{background:#b3261e}
+input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;margin:4px 0 12px}
+label{font-size:13px;font-weight:600}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+/* login */
+#login{min-height:100vh;display:grid;grid-template-columns:1.1fr 1fr}
+.art{position:relative;background:linear-gradient(160deg,#4a1128,#6b1d3a 55%,#8a2a4d);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.art .photo{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.35}
+.art svg{position:relative;width:min(560px,90%);height:auto}
+.art .cap{position:absolute;bottom:28px;left:0;right:0;text-align:center;color:#f3e2bd;font-family:'Cormorant Garamond',serif;font-size:22px;font-style:italic}
+.formside{display:flex;align-items:center;justify-content:center;padding:32px}
+.formbox{width:100%;max-width:360px}.formbox .brand{font-size:56px;color:var(--wine);line-height:1}
+.formbox .sub{letter-spacing:.18em;font-size:12px;color:var(--gold);font-weight:600;margin:6px 0 24px}
+#err{color:#b3261e;min-height:20px;font-size:13px}
+/* app */
+#app{display:none;min-height:100vh}
+aside{position:fixed;inset:0 auto 0 0;width:230px;background:var(--wine);color:#f6e9d0;padding:18px 12px;overflow:auto;transition:.2s;z-index:20}
+aside .brand{font-size:26px;padding:4px 10px 14px;color:#fff}
+aside a{display:block;padding:10px 14px;border-radius:8px;cursor:pointer;color:#f6e9d0}
+aside a.on,aside a:hover{background:rgba(201,164,92,.25)}
+main{margin-left:230px;padding:24px;max-width:1200px}
+.top{display:none;background:var(--wine);color:#fff;padding:10px 14px;position:sticky;top:0;z-index:10}
+.top button{background:none;border:0;color:#fff;font-size:22px}
+.grid{display:grid;gap:14px}.cards{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 2px 10px rgba(107,29,58,.06)}
+.stat b{display:block;font:600 30px 'Cormorant Garamond',serif;color:var(--wine)}.stat span{font-size:12px;color:#7a6a5f}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);font-size:14px}th{color:#7a6a5f;font-weight:600}
+.scroll{overflow-x:auto}.bar{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}.bar input{flex:1;min-width:180px;margin:0}
+.svc{padding:0;overflow:hidden;cursor:pointer;text-align:center}.svc .img{height:120px;background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font-size:44px}
+.svc h3{font-size:20px;margin:10px 8px 0}.svc p{margin:2px 0 12px;color:var(--wine);font-weight:600}.svc.off{opacity:.45}
+.svcs{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+.pos{grid-template-columns:1.6fr 1fr;align-items:start}
+.line{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--line)}
+.total{display:flex;justify-content:space-between;font:600 28px 'Cormorant Garamond',serif;color:var(--wine);margin:12px 0}
+.pm{display:flex;gap:16px;margin:8px 0 14px}.pm label{font-weight:500;display:flex;gap:6px;align-items:center}.pm input{width:auto;margin:0}
+.modal{position:fixed;inset:0;background:rgba(40,15,25,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+.modal.on{display:flex}.modal .box{background:#fff;border-radius:18px;padding:24px;max-width:440px;width:100%;max-height:92vh;overflow:auto;text-align:center}
+.box img.qr{width:220px;max-width:100%;border:1px solid var(--line);border-radius:12px}
+.inv{text-align:left}.inv h2{text-align:center;color:var(--wine)}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 20px;border-radius:10px;display:none;z-index:99}
+.tag{padding:2px 10px;border-radius:99px;background:#f3e6c8;font-size:12px}
+@media(max-width:820px){#login{grid-template-columns:1fr}.art{min-height:240px}.art .cap{font-size:16px;bottom:12px}
+ aside{transform:translateX(-100%)}aside.open{transform:none}main{margin:0;padding:14px}.top{display:flex;justify-content:space-between;align-items:center}.pos{grid-template-columns:1fr}}
+@media print{body *{visibility:hidden}#invBox,#invBox *{visibility:visible}#invBox{position:absolute;left:0;top:0;width:100%}.noprint{display:none!important}}
+</style></head><body>
+
+<!-- LOGIN -->
+<section id="login">
+  <div class="art" aria-hidden="true">
+    <div class="photo" id="loginPhoto"></div>
+    <!-- Makeup artist collage: brushes, lipstick, palette, mirror, compact -->
+    <svg viewBox="0 0 560 480" role="img">
+      <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#e7c98b"/><stop offset="1" stop-color="#b98d3f"/></linearGradient></defs>
+      <!-- hand mirror -->
+      <g transform="rotate(-18 130 250)"><ellipse cx="130" cy="170" rx="72" ry="86" fill="url(#g)"/><ellipse cx="130" cy="170" rx="58" ry="72" fill="#f7ecef"/><path d="M85 140q20-40 60-45" stroke="#fff" stroke-width="7" fill="none" opacity=".8"/><rect x="120" y="255" width="20" height="120" rx="10" fill="url(#g)"/></g>
+      <!-- palette -->
+      <g transform="rotate(8 330 130)"><rect x="230" y="60" width="220" height="130" rx="22" fill="#f6e9d0"/><circle cx="275" cy="105" r="18" fill="#8a2a4d"/><circle cx="325" cy="95" r="18" fill="#c9506e"/><circle cx="375" cy="105" r="18" fill="#d9a066"/><circle cx="290" cy="155" r="18" fill="#e8c3b0"/><circle cx="345" cy="150" r="18" fill="#6b1d3a"/><circle cx="400" cy="150" r="18" fill="#b98d3f"/></g>
+      <!-- lipsticks -->
+      <g><rect x="250" y="310" width="46" height="110" rx="6" fill="url(#g)"/><rect x="254" y="250" width="38" height="66" rx="5" fill="#c9506e"/><path d="M254 250l38-30v30z" fill="#a83a58"/>
+         <rect x="316" y="330" width="42" height="90" rx="6" fill="#f6e9d0"/><rect x="320" y="272" width="34" height="62" rx="5" fill="#8a2a4d"/><path d="M320 272l34-28v28z" fill="#6b1d3a"/></g>
+      <!-- brushes -->
+      <g><rect x="410" y="250" width="14" height="190" rx="7" fill="#f6e9d0" transform="rotate(14 417 340)"/><path d="M400 215q28-40 46-8l-8 52h-34z" fill="#e8c3b0" transform="rotate(14 417 240)"/>
+         <rect x="450" y="270" width="12" height="170" rx="6" fill="url(#g)" transform="rotate(26 456 350)"/><ellipse cx="500" cy="248" rx="16" ry="30" fill="#d9a066" transform="rotate(26 500 248)"/></g>
+      <!-- compact -->
+      <g><circle cx="120" cy="410" r="52" fill="url(#g)"/><circle cx="120" cy="410" r="40" fill="#f7ecef"/><circle cx="120" cy="410" r="22" fill="#e8c3b0"/></g>
+      <!-- sparkles -->
+      <g fill="#f3e2bd"><path d="M470 90l6 16 16 6-16 6-6 16-6-16-16-6 16-6z"/><path d="M60 60l4 10 10 4-10 4-4 10-4-10-10-4 10-4z"/><path d="M200 330l4 10 10 4-10 4-4 10-4-10-10-4 10-4z"/></g>
+    </svg>
+    <div class="cap">Where every bride becomes a masterpiece</div>
+  </div>
+  <div class="formside"><form class="formbox" id="loginForm">
+    <div class="brand">DIYA</div><div class="sub">BRIDAL STUDIO & ACADEMY · CRM</div>
+    <label for="u">Username</label><input id="u" autocomplete="username" required>
+    <label for="p">Password</label><input id="p" type="password" autocomplete="current-password" required>
+    <div id="err" role="alert"></div>
+    <button class="btn" style="width:100%">LOGIN</button>
+  </form></div>
+</section>
+
+<!-- APP -->
+<div id="app">
+  <div class="top"><button onclick="document.querySelector('aside').classList.toggle('open')" aria-label="Menu">☰</button><span class="brand">DIYA CRM</span><span></span></div>
+  <aside><div class="brand">DIYA CRM</div><nav id="nav"></nav></aside>
+  <main id="view"></main>
+</div>
+
+<div class="modal" id="modal"><div class="box" id="modalBox"></div></div>
+<div id="toast"></div>
+
+<script>
+/* ===== CONFIG: replace image URLs here (any public image link or Drive thumbnail) ===== */
+const CONFIG = {
+  API_URL: "AKfycbyLlkpbPiO3WFHx8p-Ivgpegi9W6LZRC4v4ld0Tvd_0ZSpho86Bv_EIGRbzi5-LIgaI",
+    LOGIN_PHOTO: "",   // optional: paste a makeup/bridal photo URL to show behind the illustration
+  PAGES: ["Dashboard","Customers","Appointments","Services","Billing","Payments","Students","Courses","Batches","Attendance","Certificates","Reports","Settings"]
+};
+const SERVICES = [
+  {id:"S001",name:"Bridal Makeup",price:15000,image:"",icon:"👰",description:"Full bridal look"},
+  {id:"S002",name:"Reception Makeup",price:8000,image:"",icon:"💄",description:"Reception glam"},
+  {id:"S003",name:"HD Makeup",price:6000,image:"",icon:"✨",description:"Camera-ready HD finish"},
+  {id:"S004",name:"Hair Styling",price:2000,image:"",icon:"💇‍♀️",description:"Bridal hairstyle"},
+  {id:"S005",name:"Saree Draping",price:1000,image:"",icon:"🥻",description:"Professional draping"},
+  {id:"S006",name:"Facial",price:1500,image:"",icon:"🧖‍♀️",description:"Skin care treatment"},
+  {id:"S007",name:"Manicure",price:800,image:"",icon:"💅",description:"Nail care"},
+  {id:"S008",name:"Pedicure",price:1000,image:"",icon:"🦶",description:"Foot care"},
+  {id:"S009",name:"Mehendi",price:2500,image:"",icon:"🌿",description:"Bridal mehendi hands"},
+  {id:"S010",name:"Eyelash",price:700,image:"",icon:"👁️",description:"Eyelash makeup"},
+  {id:"S011",name:"Haircut",price:500,image:"",icon:"✂️",description:"Women's haircut"},
+  {id:"S012",name:"Hair Treatment",price:3000,image:"",icon:"🧴",description:"Salon hair treatment"}
+];
+const TINT=["#f3d9df","#f6e9d0","#efd5c7","#e6d3e8","#f1e2c4","#dbe8e2"];
+
+/* ===== API: Apps Script Web App over HTTPS, or demo mode when API_URL is empty ===== */
+let TOKEN=null, ROLE="staff", DB={Customers:[],Services:SERVICES.map(s=>({...s,active:true})),Appointments:[],Invoices:[],Students:[],Settings:{},Courses:[],Batches:[],Payments:[],Attendance:[],Certificates:[]};
+const live = !!CONFIG.API_URL;
+function call(fn,...a){
+  if(!live) return demo(fn,a);
+  return fetch(CONFIG.API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({fn,args:a})})
+    .then(r=>r.text(),()=>{throw new Error("Cannot reach server. Check internet and API_URL.")})
+    .then(t=>{let r;try{r=JSON.parse(t)}catch(e){throw new Error("Server returned a web page, not data. Redeploy the Web App with access set to Anyone and use the /exec URL.")}
+      if(!r.ok)throw new Error(r.error||"Server error");return r.data});}
+async function demo(fn,a){ // demo only, nothing is saved
+  if(fn==="verifyCertificate") return {status:"NOT FOUND"};
+  if(fn==="login"){ if(a[0]==="admin"&&a[1]==="admin123") return {token:"demo",name:"Owner (demo)",role:"admin"}; throw new Error("Demo login: admin / admin123");}
+  const [,act,p]=a, t=p&&p.table;
+  if(act==="list") return DB[t]||[];
+  if(act==="save"){const r=p.rec; if(r.id){Object.assign(DB[t].find(x=>x.id===r.id),r);}else{r.id=t[0]+Date.now();DB[t].push(r);} return r;}
+  if(act==="remove"){DB[t]=DB[t].filter(x=>x.id!==p.id);return true;}
+  if(act==="settings") return DB.Settings;
+  if(act==="saveSettings"){Object.assign(DB.Settings,p.data);return true;}
+  if(act==="invoice"){const items=p.items.map(id=>{const s=DB.Services.find(x=>x.id===id);return{name:s.name,price:s.price}});
+    const c=DB.Customers.find(x=>x.id===p.customerId); const total=items.reduce((a,b)=>a+b.price,0);
+    const n="INV/2026/"+String(DB.Invoices.length+1).padStart(4,"0"); const d=new Date().toISOString();
+    const inv={invoiceNo:n,customerName:c.name,total,method:p.method,status:"PAID",date:d.slice(0,10),time:d.slice(11,19),items,customer:c};DB.Invoices.push(inv);return inv;}
+  if(["feeAdd","attSave","certGen","report"].includes(act)) throw new Error("This works only after connecting the Apps Script backend");
+  if(act==="dashboard"){const t0=new Date().toISOString().slice(0,10);return{customers:DB.Customers.length,students:DB.Students.length,
+    todayAppointments:DB.Appointments.filter(x=>x.date===t0),todaySales:DB.Invoices.filter(i=>i.date===t0).reduce((a,b)=>a+b.total,0),pending:0,recentBills:DB.Invoices.slice(-5).reverse(),recentStudents:DB.Students.slice(-5).reverse()};}
+}
+const api=(act,p)=>call("api",TOKEN,act,p);
+const fmt=v=>{v=String(v??"");return /^\d{4}-\d\d-\d\dT/.test(v)?(v.startsWith("1899")?v.slice(11,16):v.slice(0,10)):v};
+const today=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+
+/* ===== helpers ===== */
+const $=s=>document.querySelector(s), inr=n=>"₹"+Number(n||0).toLocaleString("en-IN");
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function toast(m){const t=$("#toast");t.textContent=m;t.style.display="block";clearTimeout(t._t);t._t=setTimeout(()=>t.style.display="none",2600);}
+function modal(html){$("#modalBox").innerHTML=html;$("#modal").classList.add("on");}
+function closeModal(){$("#modal").classList.remove("on");}
+const guard=f=>async(...a)=>{try{await f(...a)}catch(e){toast(e.message)}};
+$("#modal").onclick=e=>{if(e.target.id==="modal")closeModal()};
+if(CONFIG.LOGIN_PHOTO)$("#loginPhoto").style.backgroundImage=`url(${CONFIG.LOGIN_PHOTO})`;
+
+/* ===== auth ===== */
+$("#loginForm").onsubmit=async e=>{e.preventDefault();$("#err").textContent="";
+  try{const r=await call("login",$("#u").value,$("#p").value);TOKEN=r.token;ROLE=r.role;
+    $("#login").style.display="none";$("#app").style.display="block";buildNav();go("Dashboard");
+    if(!live)toast("Demo mode: data is not saved");}
+  catch(err){$("#err").textContent=err.message}};
+function buildNav(){$("#nav").innerHTML=CONFIG.PAGES.map(p=>`<a data-p="${p}">${p}</a>`).join("")+`<a onclick="location.reload()">Logout</a>`;
+  $("#nav").onclick=e=>{const p=e.target.dataset.p;if(p){go(p);document.querySelector("aside").classList.remove("open")}}}
+function go(p){document.querySelectorAll("#nav a").forEach(a=>a.classList.toggle("on",a.dataset.p===p));
+  guard(async()=>{await (PAGE[p]||soon)(p)})();}
+const soon=p=>{$("#view").innerHTML=`<h2>${p}</h2><div class="card" style="margin-top:14px">This module is coming in the next build. The Google Sheets tab for it is already created by setup().</div>`};
+
+/* ===== generic list page ===== */
+async function listPage(title,table,cols,fields,rowName,extra){
+  const rows=await api("list",{table});
+  const draw=q=>{const f=rows.filter(r=>JSON.stringify(r).toLowerCase().includes(q.toLowerCase()));
+    $("#tbody").innerHTML=f.map(r=>`<tr>${cols.map(c=>`<td>${esc(fmt(r[c]))}</td>`).join("")}<td style="white-space:nowrap">${extra?extra(r)+" ":""}<button class="btn sm alt" onclick='editRec("${table}","${r.id}")'>Edit</button> ${ROLE==="admin"?`<button class="btn sm red" onclick='delRec("${table}","${r.id}")'>Delete</button>`:""}</td></tr>`).join("")||`<tr><td colspan="9">Nothing here yet. Click Add to create the first one.</td></tr>`};
+  $("#view").innerHTML=`<h2>${title}</h2><div class="bar"><input id="q" placeholder="Search"><button class="btn" onclick='editRec("${table}")'>+ ADD ${rowName}</button></div>
+  <div class="card scroll"><table><thead><tr>${cols.map(c=>`<th>${c}</th>`).join("")}<th></th></tr></thead><tbody id="tbody"></tbody></table></div>`;
+  $("#q").oninput=e=>draw(e.target.value);draw("");
+  FORMS[table]={fields,rows,reload:()=>go(title)};}
+async function tablePage(title,table,cols){const rows=(await api("list",{table})).slice().reverse();
+  $("#view").innerHTML=`<h2>${title}</h2><div class="bar"><input id="q" placeholder="Search"></div><div class="card scroll"><table><thead><tr>${cols.map(c=>`<th>${c}</th>`).join("")}</tr></thead><tbody id="tbody"></tbody></table></div>`;
+  const draw=q=>$("#tbody").innerHTML=rows.filter(r=>JSON.stringify(r).toLowerCase().includes(q.toLowerCase())).map(r=>`<tr>${cols.map(c=>`<td>${esc(fmt(r[c]))}</td>`).join("")}</tr>`).join("")||"<tr><td>Nothing here yet</td></tr>";
+  $("#q").oninput=e=>draw(e.target.value);draw("");}
+const FORMS={};
+window.editRec=async(table,id)=>{const F=FORMS[table],r=id?F.rows.find(x=>x.id===id):{};
+  const inp=([k,l,t,o])=>{let v=r[k];if(t==="date"||t==="time")v=fmt(v);
+    if(t==="select")return `<label>${l}</label><select id="f_${k}">${o.map(x=>{const [val,lb]=Array.isArray(x)?x:[x,x];return `<option value="${esc(val)}" ${String(v)===String(val)?"selected":""}>${esc(lb)}</option>`}).join("")}</select>`;
+    return `<label>${l}</label><input id="f_${k}" type="${t||"text"}" value="${esc(v)}">`};
+  modal(`<div style="text-align:left"><h3>${id?"Edit":"Add"}</h3>${F.fields.map(inp).join("")}
+  <button class="btn" style="width:100%" onclick='saveRec("${table}","${id||""}")'>Save</button></div>`);};
+window.saveRec=guard(async(table,id)=>{const F=FORMS[table],rec={};F.fields.forEach(([k])=>rec[k]=$("#f_"+k).value);if(id)rec.id=id;
+  await api("save",{table,rec});closeModal();toast(table.slice(0,-1)+" saved successfully");F.reload();});
+window.delRec=guard(async(table,id)=>{if(!confirm("Delete this record? This cannot be undone."))return;await api("remove",{table,id});toast("Deleted");FORMS[table].reload();});
+
+/* ===== pages ===== */
+const PAGE={
+ async Dashboard(){const d=await api("dashboard");
+  const st=[["Total customers",d.customers],["Total students",d.students],["Today's appointments",d.todayAppointments.length],["Today's sales",inr(d.todaySales)],["Pending payments",inr(d.pending)]];
+  const tbl=(h,rows)=>`<div class="card scroll"><h3>${h}</h3><table>${rows||"<tr><td>Nothing yet</td></tr>"}</table></div>`;
+  $("#view").innerHTML=`<h2>Welcome to Diya Bridal Studio</h2><div class="grid cards" style="margin:14px 0">${st.map(([l,v])=>`<div class="card stat"><b>${v}</b><span>${l}</span></div>`).join("")}</div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
+  ${tbl("Today's appointments",d.todayAppointments.map(a=>`<tr><td>${esc(a.time)}</td><td>${esc(a.customerName)}</td><td>${esc(a.serviceName)}</td></tr>`).join(""))}
+  ${tbl("Recent bills",d.recentBills.map(b=>`<tr><td>${esc(b.invoiceNo)}</td><td>${esc(b.customerName)}</td><td>${inr(b.total)}</td></tr>`).join(""))}
+  ${tbl("Recent students",d.recentStudents.map(s=>`<tr><td>${esc(s.name)}</td><td>${esc(s.course)}</td></tr>`).join(""))}</div>`;},
+ Customers:()=>listPage("Customers","Customers",["name","mobile","email"],[["name","Customer name"],["mobile","Mobile (10 digits)","tel"],["whatsapp","WhatsApp number","tel"],["email","Email","email"],["address","Address"],["notes","Notes"]],"CUSTOMER"),
+ Appointments:()=>listPage("Appointments","Appointments",["customerName","serviceName","date","time","staff","status"],[["customerName","Customer"],["serviceName","Service"],["date","Date","date"],["time","Time","time"],["staff","Staff"],["status","Status","select",["New","Confirmed","Completed","Cancelled"]],["notes","Notes"]],"APPOINTMENT"),
+ async Services(){const rows=await api("list",{table:"Services"});
+  const draw=r=>`<div class="card svc ${String(r.active)==="false"?"off":""}" onclick='editSvc("${r.id}")'><div class="img" style="background-color:${TINT[rows.indexOf(r)%6]};${r.image?`background-image:url(${esc(r.image)})`:""}">${r.image?"":r.icon||"💄"}</div><h3>${esc(r.name)}</h3><p>${inr(r.price)}</p></div>`;
+  $("#view").innerHTML=`<h2>Services</h2><div class="bar"><button class="btn" onclick='editSvc()'>+ ADD SERVICE</button></div><div class="grid svcs">${rows.map(draw).join("")}</div>`;
+  FORMS.Services={fields:[["name","Service name"],["price","Fixed price (₹)","number"],["image","Image URL"],["description","Description"],["active","Active (true / false)"]],rows,reload:()=>go("Services")};
+  window.editSvc=id=>{if(ROLE!=="admin")return toast("Only admin can change services");editRec("Services",id)};},
+ async Billing(){const [cust,svcs,set]=await Promise.all([api("list",{table:"Customers"}),api("list",{table:"Services"}),api("settings")]);
+  const act=svcs.filter(s=>String(s.active)!=="false");let sel=[];
+  $("#view").innerHTML=`<h2>Billing</h2><div class="grid pos" style="margin-top:14px"><div>
+   <label>Customer</label><select id="cust"><option value="">Select customer</option>${cust.map(c=>`<option value="${c.id}">${esc(c.name)} · ${esc(c.mobile)}</option>`).join("")}</select>
+   <div class="grid svcs">${act.map((s,i)=>`<div class="card svc" data-id="${s.id}"><div class="img" style="background-color:${TINT[i%6]};${s.image?`background-image:url(${esc(s.image)})`:""}">${s.image?"":s.icon||"💄"}</div><h3>${esc(s.name)}</h3><p>${inr(s.price)}</p></div>`).join("")}</div></div>
+   <div class="card"><h3>Selected services</h3><div id="lines"></div><div class="total"><span>TOTAL</span><span id="tot">₹0</span></div>
+   <div class="pm">${["Cash","UPI","Card"].map((m,i)=>`<label><input type="radio" name="pm" value="${m}" ${i?"":"checked"}>${m}</label>`).join("")}</div>
+   <button class="btn" style="width:100%;padding:16px" id="gen">GENERATE BILL</button></div></div>`;
+  const redraw=()=>{const it=sel.map(id=>svcs.find(s=>s.id===id));$("#lines").innerHTML=it.map(s=>`<div class="line"><span>${esc(s.name)}</span><span>${inr(s.price)} <a style="cursor:pointer;color:#b3261e" onclick="rm('${s.id}')">✕</a></span></div>`).join("")||"<p>Tap a service to add it.</p>";
+    $("#tot").textContent=inr(it.reduce((a,b)=>a+Number(b.price),0));};
+  window.rm=id=>{sel=sel.filter(x=>x!==id);redraw()};
+  document.querySelectorAll(".pos .svc").forEach(c=>c.onclick=()=>{if(!sel.includes(c.dataset.id))sel.push(c.dataset.id);redraw()});redraw();
+  $("#gen").onclick=guard(async()=>{const customerId=$("#cust").value,method=document.querySelector("[name=pm]:checked").value;
+    if(!customerId)throw new Error("Select a customer first");if(!sel.length)throw new Error("Select at least one service");
+    const total=sel.reduce((a,id)=>a+Number(svcs.find(s=>s.id===id).price),0);
+    const finish=guard(async()=>{const inv=await api("invoice",{customerId,items:sel,method});closeModal();toast("Invoice generated successfully");showInvoice(inv,set);sel=[];redraw();});
+    if(method==="UPI"){window.finish=finish;modal(`<h3>PAYMENT</h3><p style="font:600 30px 'Cormorant Garamond'">TOTAL: ${inr(total)}</p>
+      ${set.upiQr?`<img class="qr" src="${esc(set.upiQr)}" alt="Owner UPI QR">`:`<p>No QR uploaded yet. Admin can add it in Settings.</p>`}
+      <p>Scan this QR code to pay<br>UPI ID: <b>${esc(set.upiId||"not set")}</b></p>
+      <button class="btn" style="width:100%" onclick="finish()">PAYMENT RECEIVED</button><br><br><button class="btn alt sm" onclick="closeModal()">Cancel</button>`);}
+    else finish();});},
+ async Settings(){if(ROLE!=="admin")return $("#view").innerHTML="<h2>Settings</h2><p>Admin only.</p>";
+  const s=await api("settings");const f=[["businessName","Business name"],["address","Business address"],["phone","Phone"],["upiId","UPI ID"],["invoiceFooter","Invoice footer"],["signature","Certificate signatory name"]];
+  $("#view").innerHTML=`<h2>Settings</h2><div class="card" style="max-width:520px;margin-top:14px">${f.map(([k,l])=>`<label>${l}</label><input id="s_${k}" value="${esc(s[k])}">`).join("")}
+   <label>Owner's UPI QR image</label><input type="file" id="qrf" accept="image/*">${s.upiQr?`<img class="qr" style="width:160px" src="${esc(s.upiQr)}">`:""}
+   <br><button class="btn" id="sv">Save settings</button></div>`;
+  $("#sv").onclick=guard(async()=>{const data={};f.forEach(([k])=>data[k]=$("#s_"+k).value);await api("saveSettings",{data});
+    const file=$("#qrf").files[0];if(file){const b=await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result.split(",")[1]);fr.readAsDataURL(file)});
+      if(live)await api("saveQR",{base64:b,mime:file.type});else await api("saveSettings",{data:{upiQr:URL.createObjectURL(file)}});}
+    toast("Settings saved successfully");go("Settings");});}
+};
+
+const opt=(rows,f)=>[["","Select"],...rows.map(f)];
+Object.assign(PAGE,{
+ async Courses(){return listPage("Courses","Courses",["name","duration","fee","status"],[["name","Course name"],["duration","Duration (e.g. 3 months)"],["fee","Course fee (₹)","number"],["description","Description"],["modules","Modules (separate with commas)"],["status","Status","select",["Active","Inactive"]]],"COURSE")},
+ async Batches(){const c=await api("list",{table:"Courses"});
+  return listPage("Batches","Batches",["id","course","start","end","trainer","status"],[["course","Course","select",opt(c,x=>x.name)],["start","Start date","date"],["end","End date","date"],["trainer","Trainer"],["status","Status","select",["Upcoming","Running","Completed"]]],"BATCH")},
+ async Students(){const [c,b]=await Promise.all([api("list",{table:"Courses"}),api("list",{table:"Batches"})]);
+  return listPage("Students","Students",["id","name","mobile","course","batch","fee","paid","balance","status"],[["name","Student name"],["mobile","Mobile","tel"],["whatsapp","WhatsApp","tel"],["email","Email","email"],["address","Address"],["course","Course","select",opt(c,x=>x.name)],["batch","Batch","select",opt(b,x=>[x.id,x.id+" · "+x.course])],["joined","Joining date","date"],["fee","Course fee (₹)","number"],["status","Status","select",["Active","Completed","Dropped"]]],"STUDENT",r=>`<button class="btn sm" onclick='feeModal("${r.id}")'>Fees</button>`)},
+ Payments:()=>tablePage("Payments","Payments",["invoiceNo","amount","method","status","date","time","staff"]),
+ async Attendance(){let [bt,st,at]=await Promise.all([api("list",{table:"Batches"}),api("list",{table:"Students"}),api("list",{table:"Attendance"})]);const marks={};
+  $("#view").innerHTML=`<h2>Attendance</h2><div class="card grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))"><div><label>Batch</label><select id="ab">${opt(bt,b=>[b.id,b.id+" · "+b.course]).map(([v,l])=>`<option value="${esc(v)}">${esc(l)}</option>`).join("")}</select></div><div><label>Date</label><input type="date" id="ad" value="${today()}"></div></div><div id="alist" class="card scroll" style="margin-top:14px"></div>`;
+  const draw=()=>{const b=$("#ab").value,d=$("#ad").value;if(!b){$("#alist").innerHTML="Select a batch to see its students.";return}
+   const ss=st.filter(s=>s.batch===b);at.filter(a=>a.batch===b&&fmt(a.date)===d).forEach(a=>{if(!marks[a.studentId+d])marks[a.studentId+d]=a.status});
+   $("#alist").innerHTML=ss.length?`<table><thead><tr><th>Student</th><th>Attendance %</th><th>Today</th></tr></thead>${ss.map(s=>{const rec=at.filter(a=>a.studentId===s.id),p=rec.filter(a=>a.status==="Present").length;
+    return `<tr><td>${esc(s.name)}</td><td>${rec.length?Math.round(p*100/rec.length)+"%":"-"}</td><td style="white-space:nowrap">${["Present","Absent","Leave"].map(x=>`<button class="btn sm ${marks[s.id+d]===x?"":"alt"}" data-s="${s.id}" data-v="${x}">${x}</button>`).join(" ")}</td></tr>`}).join("")}</table><br><button class="btn" id="asave">SAVE ATTENDANCE</button>`:"No students in this batch. Assign students to it on the Students page.";};
+  $("#ab").onchange=draw;$("#ad").onchange=draw;
+  $("#alist").onclick=guard(async e=>{const b=$("#ab").value,d=$("#ad").value,t=e.target;
+   if(t.dataset.s){marks[t.dataset.s+d]=t.dataset.v;draw();}
+   if(t.id==="asave"){const ss=st.filter(s=>s.batch===b),m=ss.filter(s=>marks[s.id+d]).map(s=>({studentId:s.id,status:marks[s.id+d]}));
+    if(!m.length)throw new Error("Mark at least one student");await api("attSave",{batch:b,date:d,marks:m});
+    at=at.filter(a=>!(a.batch===b&&fmt(a.date)===d)).concat(m.map(x=>({...x,batch:b,date:d})));toast("Attendance saved successfully");draw();}});
+  draw();},
+ async Certificates(){const [st,ce]=await Promise.all([api("list",{table:"Students"}),api("list",{table:"Certificates"})]);
+  const dl=u=>{const id=(String(u).match(/[-\w]{25,}/)||[])[0];return id?"https://drive.google.com/uc?export=download&id="+id:u};
+  const done=st.filter(s=>s.status==="Completed");
+  $("#view").innerHTML=`<h2>Certificates</h2><div class="card"><h3>Verify a certificate</h3><div class="bar"><input id="vno" placeholder="DBSA/2026/001"><button class="btn" onclick="verify()">VERIFY</button></div><div id="vres"></div></div>
+  <div class="bar"><input id="q" placeholder="Search by certificate number or student"></div>
+  <div class="card scroll"><h3>Completed students</h3><table><thead><tr><th>Student</th><th>Course</th><th>Certificate</th><th></th></tr></thead><tbody id="tbody"></tbody></table></div>`;
+  const draw=q=>{$("#tbody").innerHTML=done.filter(s=>(s.name+s.course+(ce.find(c=>c.studentId===s.id)||{}).certNo).toLowerCase().includes(q.toLowerCase())).map(s=>{const c=ce.find(x=>x.studentId===s.id);
+   return `<tr><td>${esc(s.name)}</td><td>${esc(s.course)}</td><td>${c?esc(c.certNo):"Not issued"}</td><td style="white-space:nowrap">${c?`<a class="btn sm" target="_blank" href="${esc(c.pdfUrl)}">View</a> <a class="btn sm alt" href="${esc(dl(c.pdfUrl))}">Download</a>`:`<button class="btn sm" onclick='genCert("${s.id}")'>GENERATE CERTIFICATE</button>`}</td></tr>`}).join("")||"<tr><td colspan='4'>No completed students yet. Set a student's status to Completed on the Students page.</td></tr>"};
+  $("#q").oninput=e=>draw(e.target.value);draw("");},
+ async Reports(){const r=await api("report");const R=n=>inr(n);
+  const bars=(rows,money)=>{const m=Math.max(1,...rows.map(x=>x[1]));return rows.length?`<table>${rows.map(([k,v])=>`<tr><td>${esc(k)}</td><td style="width:45%"><div style="background:var(--gold);height:10px;border-radius:6px;width:${Math.round(v*100/m)}%"></div></td><td>${money?R(v):v}</td></tr>`).join("")}</table>`:"No data yet"};
+  const st=[["Today's sales",R(r.today)],["This month",R(r.month)],["Total payments",R(r.totalPayments)],["Pending student fees",R(r.pendingFees)]];
+  $("#view").innerHTML=`<h2>Reports</h2><div class="grid cards" style="margin:14px 0">${st.map(([l,v])=>`<div class="card stat"><b>${v}</b><span>${l}</span></div>`).join("")}</div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))"><div class="card"><h3>Daily sales (last 7 days)</h3>${bars(r.daily,1)}</div><div class="card"><h3>Monthly sales</h3>${bars(r.monthly,1)}</div><div class="card"><h3>Service-wise sales</h3>${bars(r.services,1)}</div>
+  <div class="card"><h3>Academy</h3><p>Total students: <b>${r.students.total}</b><br>Active: <b>${r.students.active}</b><br>Completed: <b>${r.students.completed}</b><br>Certificates issued: <b>${r.certs}</b></p></div><div class="card"><h3>Course-wise students</h3>${bars(r.courses,0)}</div></div>`;}
+});
+window.feeModal=id=>{const s=FORMS.Students.rows.find(x=>x.id===id);
+  modal(`<div style="text-align:left"><h3>${esc(s.name)}</h3><p>Course fee ${inr(s.fee)} · Paid ${inr(s.paid)} · <b>Balance ${inr(s.balance)}</b></p><label>Amount received (₹)</label><input id="famt" type="number"><button class="btn" style="width:100%" onclick='addFee("${id}")'>ADD PAYMENT</button></div>`)};
+window.addFee=guard(async id=>{const r=await api("feeAdd",{studentId:id,amount:$("#famt").value});toast("Payment recorded successfully");
+  modal(`<h3>Payment recorded successfully</h3><p>Balance now: <b>${inr(r.balance)}</b></p><a class="btn" target="_blank" href="${esc(r.receiptUrl)}">Open receipt</a> <button class="btn alt" onclick="closeModal();go('Students')">Close</button>`)});
+window.genCert=guard(async id=>{await api("certGen",{studentId:id});toast("Certificate generated successfully");go("Certificates")});
+window.verify=guard(async()=>{const r=await call("verifyCertificate",$("#vno").value);
+  $("#vres").innerHTML=r.status==="VALID"?`<p><span class="tag" style="background:#d8ecd6">VALID</span></p><p>${esc(r.studentName)} · ${esc(r.course)}<br>${esc(r.certNo)} · ${esc(fmt(r.completion))}</p>`:`<p><span class="tag" style="background:#f6d5d2">NOT FOUND</span></p>`});
+function showInvoice(inv,set){modal(`<div class="inv" id="invBox"><h2>${esc(set.businessName||"DIYA BRIDAL STUDIO & ACADEMY")}</h2>
+ <p style="text-align:center;margin:0">${esc(set.address||"")} ${esc(set.phone||"")}</p><hr>
+ <p><b>Invoice:</b> ${esc(inv.invoiceNo)}<br><b>Date:</b> ${esc(inv.date)} ${esc(inv.time)}<br><b>Customer:</b> ${esc(inv.customer.name)} · ${esc(inv.customer.mobile)}</p>
+ ${inv.items.map(i=>`<div class="line"><span>${esc(i.name)}</span><span>${inr(i.price)}</span></div>`).join("")}
+ <div class="total"><span>TOTAL</span><span>${inr(inv.total)}</span></div>
+ <p><b>Payment:</b> ${esc(inv.method)} · <span class="tag">${esc(inv.status)}</span></p>
+ <p style="text-align:center;font-style:italic">${esc(set.invoiceFooter||"Thank you for choosing Diya Bridal Studio & Academy.")}</p></div>
+ <div class="noprint"><button class="btn" onclick="window.print()">Print / Save as PDF</button> <button class="btn alt" onclick="closeModal()">Close</button></div>`);}
+</script></body></html>
